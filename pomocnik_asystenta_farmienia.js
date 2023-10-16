@@ -1,36 +1,40 @@
+// Importujemy wymagane biblioteki
 const axios = require('axios');
 const cheerio = require('cheerio');
 
+// Adres URL strony, którą chcemy analizować
 const url = 'https://pl193.plemiona.pl/game.php?village=28111&screen=premium&mode=log';
 
+// Pobieramy zawartość strony
 axios.get(url)
   .then((response) => {
     if (response.status === 200) {
       const html = response.data;
       const $ = cheerio.load(html);
-      
-      // Znajdź tabelę, która zawiera dane o wydanych punktach premium
-      const table = $('table#transaction_table');
 
-      // Zdefiniuj zmienne do przechowywania sumy wydanych punktów
-      let spentPoints = 0;
+      // Inicjalizujemy pustą tablicę na grupy
+      const groups = [];
 
-      // Iteruj przez wiersze tabeli
-      table.find('tr').each((index, row) => {
-        // Pomijamy pierwszy wiersz z nagłówkami
-        if (index > 0) {
-          // Pobierz komórkę w kolumnie "Koszt"
-          const costCell = $(row).find('td:nth-child(5)');
-          const cost = parseInt(costCell.text(), 10);
+      // Znajdujemy wszystkie elementy "td" z identyfikatorem "content_value"
+      $('td#content_value').each((index, element) => {
+        // Tworzymy obiekt dla każdej grupy i wypełniamy go odpowiednimi danymi
+        const group = {
+          Data: $(element).text(),  // Tutaj dodajemy odpowiedni selektor, aby znaleźć datę
+          Świat: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć świat
+          Transakcja: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć transakcję
+          Zmiana: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć zmianę
+          NoweSaldoPP: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć nowe saldo PP
+          DalszeInformacje: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć dalsze informacje
+        };
 
-          // Dodaj koszt do sumy wydanych punktów
-          if (!isNaN(cost)) {
-            spentPoints += cost;
-          }
-        }
+        // Dodajemy grupę do tablicy
+        groups.push(group);
       });
 
-      console.log('Suma wydanych punktów premium: ' + spentPoints);
+      // Możesz tutaj dodać kod do filtrowania i sumowania danych w grupach
+
+      // Wyświetlamy wyniki
+      console.log(groups);
     }
   })
   .catch((error) => {
