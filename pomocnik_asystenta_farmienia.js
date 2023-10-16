@@ -1,40 +1,38 @@
-// Importujemy wymagane biblioteki
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-// Adres URL strony, którą chcemy analizować
 const url = 'https://pl193.plemiona.pl/game.php?village=28111&screen=premium&mode=log';
 
-// Pobieramy zawartość strony
 axios.get(url)
   .then((response) => {
     if (response.status === 200) {
       const html = response.data;
       const $ = cheerio.load(html);
 
-      // Inicjalizujemy pustą tablicę na grupy
-      const groups = [];
+      // Znajdź odpowiednie selektory na stronie i wyciągnij dane
+      const data = [];
 
-      // Znajdujemy wszystkie elementy "td" z identyfikatorem "content_value"
-      $('td#content_value').each((index, element) => {
-        // Tworzymy obiekt dla każdej grupy i wypełniamy go odpowiednimi danymi
-        const group = {
-          Data: $(element).text(),  // Tutaj dodajemy odpowiedni selektor, aby znaleźć datę
-          Świat: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć świat
-          Transakcja: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć transakcję
-          Zmiana: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć zmianę
-          NoweSaldoPP: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć nowe saldo PP
-          DalszeInformacje: '',  // Tutaj dodajemy odpowiedni selektor, aby znaleźć dalsze informacje
-        };
+      // Przykładowe selektory:
+      const dateSelector = $('YOUR_DATE_SELECTOR').text();
+      const worldSelector = $('YOUR_WORLD_SELECTOR').text();
+      const transactionSelector = $('YOUR_TRANSACTION_SELECTOR').text();
+      const changeSelector = $('YOUR_CHANGE_SELECTOR').text();
+      const newBalanceSelector = $('YOUR_NEW_BALANCE_SELECTOR').text();
+      const detailsSelector = $('YOUR_DETAILS_SELECTOR').text();
 
-        // Dodajemy grupę do tablicy
-        groups.push(group);
+      // Dodaj dane do tablicy
+      data.push({
+        Data: dateSelector,
+        Świat: worldSelector,
+        Transakcja: transactionSelector,
+        Zmiana: changeSelector,
+        NoweSaldoPP: newBalanceSelector,
+        DalszeInformacje: detailsSelector,
       });
 
-      // Możesz tutaj dodać kod do filtrowania i sumowania danych w grupach
+      // Możesz przetwarzać dane, filtrować, sumować itp.
 
-      // Wyświetlamy wyniki
-      console.log(groups);
+      console.log(data);
     }
   })
   .catch((error) => {
